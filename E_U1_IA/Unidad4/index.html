@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagnóstico Médico</title>
+</head>
+<body>
+    <h2>Selecciona los síntomas:</h2>
+    <form id="formulario">
+        <label><input type="checkbox" name="sintoma" value="fiebre"> Fiebre</label><br>
+        <label><input type="checkbox" name="sintoma" value="tos"> Tos</label><br>
+        <label><input type="checkbox" name="sintoma" value="dolor_cabeza"> Dolor de cabeza</label><br>
+        <label><input type="checkbox" name="sintoma" value="náuseas"> Náuseas</label><br>
+        <button type="submit">Enviar</button>
+    </form>
+
+    <h3>Resultado:</h3>
+    <div id="resultado"></div>
+
+    <script>
+        document.getElementById('formulario').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const seleccionados = Array.from(document.querySelectorAll('input[name="sintoma"]:checked'))
+                .map(cb => cb.value);
+
+            fetch('/diagnostico', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ sintomas: seleccionados })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('resultado').innerText = data.diagnostico;
+            });
+        });
+    </script>
+</body>
+</html>
